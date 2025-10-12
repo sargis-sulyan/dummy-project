@@ -1,0 +1,98 @@
+version: "3.9"
+
+services:
+  # =======================
+  # Database (Oracle XE)
+  # =======================
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    ports:
+      - "1521:1521"   # Oracle listener
+      - "5500:5500"   # EM Express (optional)
+    environment:
+      ORACLE_PASSWORD: "${ORACLE_PASSWORD}"
+      APP_USER: "${APP_USER}"
+      APP_USER_PASSWORD: "${APP_USER_PASSWORD}"
+    volumes:
+      - oracle_data:/opt/oracle/oradata   # persist DB files
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks: [ appnet ]
+    restart: unless-stopped
+
+  # =======================
+  # Backend (Spring Boot)
+  # =======================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"            # jdbc:oracle:thin:@oracle:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"  # APP_USER
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"  # AppUser123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "none"
+      SPRING_PROFILES_ACTIVE: "docker"
+    ports:
+      - "8080:8080"
+    networks: [ appnet ]
+    restart: unless-stopped
+
+  # =======================
+  # Frontend (Angular via Nginx)
+  # =======================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on: [ backend ]
+    ports:
+      - "80:80"
+    networks: [ appnet ]
+    restart: unless-stopped
+
+  # =======================
+  # Logs stack: Loki + Grafana + Promtail
+  # =======================
+  loki:
+    image: grafana/loki:2.9.8
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    ports:
+      - "3100:3100"   # Loki HTTP API
+    networks: [ appnet ]
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    ports:
+      - "3000:3000"   # Grafana UI
+    environment:
+      GF_SECURITY_ADMIN_USER: "admin"
+      GF_SECURITY_ADMIN_PASSWORD: "admin"
+      GF_SERVER_ENABLE_GZIP: "true"
+    networks: [ appnet ]
+    restart: unless-stopped
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    command: ["--config.file=/etc/promtail/config.yml"]
+    # Promtail needs to read Docker's JSON logs and talk to the Docker socket
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+    networks: [ appnet ]
+    restart: unless-stopped
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  oracle_data:

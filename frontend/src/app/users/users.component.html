@@ -1,0 +1,36 @@
+<div class="container" style="max-width: 700px; margin: 24px auto; font-family: system-ui, Arial;">
+    <h2>Users</h2>
+
+    <div *ngIf="loading">Loading...</div>
+    <div *ngIf="error" style="color: crimson">{{ error }}</div>
+
+    <table *ngIf="users.length" border="1" cellpadding="8" cellspacing="0" style="width:100%; margin: 12px 0;">
+        <thead>
+        <tr>
+            <th style="text-align:left;">ID</th>
+            <th style="text-align:left;">Name</th>
+            <th style="text-align:left;">Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let u of users">
+            <td>{{ u.id }}</td>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 style="margin-top:24px;">Add user</h3>
+    <form (ngSubmit)="add()" #f="ngForm" style="display:grid; gap:8px; grid-template-columns: 1fr 1fr auto; align-items:end;">
+        <label>
+            <div>Name</div>
+            <input type="text" [(ngModel)]="name" name="name" required />
+        </label>
+        <label>
+            <div>Email</div>
+            <input type="email" [(ngModel)]="email" name="email" required />
+        </label>
+        <button type="submit">Add</button>
+    </form>
+</div>

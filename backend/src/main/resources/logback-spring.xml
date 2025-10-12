@@ -1,0 +1,28 @@
+<configuration>
+    <property name="APP_NAME" value="backend"/>
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp/>
+                <version/>
+                <loggerName/>
+                <threadName/>
+                <logLevel/>
+                <message/>
+                <stackTrace/>
+                <mdc/>
+                <pattern>
+                    <pattern>
+                        {
+                        "app":"${APP_NAME}",
+                        "service":"${APP_NAME}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+</configuration>

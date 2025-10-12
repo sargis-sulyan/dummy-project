@@ -90,4 +90,9 @@ Thumbs.db
 /frontend/node_modules/
 node_modules/
 
+# secrets
+.env
+.env.*
+
+
 
