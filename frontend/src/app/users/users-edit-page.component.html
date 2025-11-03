@@ -1,0 +1,16 @@
+<div *ngIf="loading">Loading...</div>
+<div *ngIf="!loading">
+  <h2>Edit User #{{ id }}</h2>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <label>First name <input formControlName="name" /></label>
+    <div *ngIf="form.controls.name.invalid && form.controls.name.touched">Required</div>
+
+    <label>Email <input formControlName="email" /></label>
+    <div *ngIf="form.controls.email.invalid && form.controls.email.touched">Invalid email</div>
+
+    <button type="submit" [disabled]="form.invalid">Save</button>
+    <a routerLink="/users">Cancel</a>
+  </form>
+
+  <div *ngIf="error" style="color:crimson">{{ error }}</div>
+</div>

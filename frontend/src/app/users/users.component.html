@@ -10,13 +10,17 @@
             <th style="text-align:left;">ID</th>
             <th style="text-align:left;">Name</th>
             <th style="text-align:left;">Email</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let u of users">
-            <td>{{ u.id }}</td>
+            <a [routerLink]="['/users', u.id, 'edit']">{{ u.id }}</a>
             <td>{{ u.name }}</td>
             <td>{{ u.email }}</td>
+            <td>
+                <button type="button" (click)="delete(u)">Delete</button>
+            </td>
         </tr>
         </tbody>
     </table>

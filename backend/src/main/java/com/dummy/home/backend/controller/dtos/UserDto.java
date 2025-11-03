@@ -1,4 +1,6 @@
-package com.dummy.home.backend.user;
+package com.dummy.home.backend.controller.dtos;
+
+import com.dummy.home.backend.repo.entities.UserEntity;
 
 public record UserDto(Long id, String name, String email) {
     public static UserDto from(UserEntity e) {

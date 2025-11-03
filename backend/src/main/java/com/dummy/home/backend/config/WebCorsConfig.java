@@ -1,4 +1,4 @@
-package com.dummy.home.backend;
+package com.dummy.home.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.dummy.home.backend.user;
+package com.dummy.home.backend.repo.entities;
 
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;

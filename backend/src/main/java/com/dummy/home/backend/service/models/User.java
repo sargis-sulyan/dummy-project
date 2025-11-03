@@ -1,4 +1,4 @@
-package com.dummy.home.backend.user;
+package com.dummy.home.backend.service.models;
 
 public class User {
     private Long id;

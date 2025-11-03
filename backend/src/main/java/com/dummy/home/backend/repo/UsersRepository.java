@@ -1,5 +1,6 @@
-package com.dummy.home.backend.user;
+package com.dummy.home.backend.repo;
 
+import com.dummy.home.backend.repo.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

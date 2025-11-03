@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { UsersService } from '../services/users.service';
 import { User } from '../models/user';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-users',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterModule],
     templateUrl: './users.component.html'
 })
 export class UsersComponent {
@@ -46,6 +47,14 @@ export class UsersComponent {
                 this.error = 'Failed to add user';
                 this.loading = false;
             }
+        });
+    }
+
+    delete(u: User) {
+        if (!confirm(`Delete user #${u.id}?`)) return;
+        this.api.deleteUser(u.id).subscribe({
+            next: () => this.users = this.users.filter(x => x.id !== u.id),
+            error: () => this.error = 'Delete failed'
         });
     }
 }
